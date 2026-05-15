@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using EntityApp.Data;
 using EntityApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EntityApp.Controllers
-{
+{   [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class StudentsController : ControllerBase

@@ -1,9 +1,11 @@
 using EntityApp.Data;
 using EntityApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EntityApp.Controllers
-{
+{       
         [ApiController]
         [Route("api/[controller]")]
     public class UserController: ControllerBase
@@ -17,7 +19,7 @@ namespace EntityApp.Controllers
         [HttpGet]
         public IActionResult getUsers()
         {
-            return Ok(_con.user.ToList());
+            return Ok(_con.Users.ToList());
         }
         [HttpPost]
         public IActionResult createUser(User user)
@@ -33,5 +35,25 @@ namespace EntityApp.Controllers
                 return BadRequest(ex);
             }
         }
+       [HttpDelete("{userId}")]
+        public IActionResult ForgetUser(Guid userId)
+        {
+            var user = _con.Users.FirstOrDefault(x => x.userId == userId);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            _con.Users.Remove(user);
+
+            var res = _con.SaveChanges();
+
+            if (res > 0)
+                return Ok("Successfully deleted");
+
+            return BadRequest("Cannot delete user");
+        }
+                
     }
 }
